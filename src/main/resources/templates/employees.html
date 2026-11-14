@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header-box {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+        form label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .error {
+            color: red;
+            font-size: 0.85em;
+            margin-top: 3px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        hr {
+            margin: 30px 0;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #212529;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .action-links a {
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+        .btn-edit {
+            background-color: #ffc107;
+            color: #212529;
+            font-weight: bold;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-box">Add New Employee</div>
+
+        <!-- Form එක -->
+        <form action="#" th:action="@{/employees}" th:object="${employee}" method="post">
+            <label>Full Name</label>
+            <input type="text" th:field="*{fullName}" placeholder="Enter full name" />
+            <p class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
+
+            <label>Email</label>
+            <input type="email" th:field="*{email}" placeholder="Enter email address" />
+            <p style="color: red; font-size: 0.9em; margin-top: 3px;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            
+            <label>Phone (10 digits)</label>
+            <input type="text" th:field="*{phone}" placeholder="Enter phone number" />
+
+            <label>Department</label>
+            <input type="text" th:field="*{department}" placeholder="Enter department" />
+
+            <label>Salary</label>
+            <input type="number" step="any" th:field="*{salary}" placeholder="Enter salary" />
+            <p class="error" th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}"></p>
+
+            <button type="submit">Save Employee</button>
+        </form>
+
+        <h2>Employee List</h2>
+
+        <!-- සේවකයන් පෙන්වන Table එක -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Department</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ඩේටා නොමැති නම් පෙන්වන පණිවිඩය -->
+                <tr th:if="${#lists.isEmpty(employees)}">
+                    <td colspan="7" style="text-align: center; color: #777;">No employees found in the database.</td>
+                </tr>
+                <!-- ඩේටා ඇති විට ලූප් වී පෙන්වන ආකාරය -->
+                <tr th:each="emp : ${employees}">
+                    <td th:text="${emp.id}"></td>
+                    <td th:text="${emp.fullName}"></td>
+                    <td th:text="${emp.email}"></td>
+                    <td th:text="${emp.phone}"></td>
+                    <td th:text="${emp.department}"></td>
+                    <td th:text="${emp.salary}"></td>
+                    <td class="action-links">
+                        <a class="btn-edit" th:href="@{/employees/{id}/edit(id=${emp.id})}">Edit</a>
+                        <a class="btn-delete" th:href="@{/employees/{id}/delete(id=${emp.id})}" onclick="return confirm('Are you sure you want to delete?');">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
